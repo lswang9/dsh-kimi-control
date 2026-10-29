@@ -1,7 +1,7 @@
 {
   "name": "dsh-kimi-control",
-  "version": "0.1.0",
-  "description": "Kimi-style browser takeover interactions for DeepSeek Harness: native sidebar, animated control feedback, human handoff, and conversation cards.",
+  "version": "0.2.0",
+  "description": "Kimi Code Desktop-aligned browser takeover for DeepSeek Harness: native sidebar, workbench control state, human handoff, and conversation cards.",
   "type": "module",
   "main": "index.js",
   "exports": {
