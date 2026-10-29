@@ -1,0 +1,6 @@
+node_modules/
+.reference/
+.DS_Store
+*.tgz
+.dsh/
+dist/

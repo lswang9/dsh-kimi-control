@@ -1,0 +1,18 @@
+- insert:
+    - id: dsh-builtin-browser
+      name: dsh-builtin-browser
+
+    - id: browser
+      name: dsh-builtin-browser/browser
+
+    - id: browser-electron
+      name: dsh-builtin-browser/browser-electron
+      config:
+        viewHost: !!js ctx.get('electronViewHost')
+
+    - id: tool-browser
+      name: dsh-builtin-browser/tool-browser
+      config: {}
+
+    - id: dsh-kimi-control
+      name: dsh-kimi-control

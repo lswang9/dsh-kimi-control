@@ -1,0 +1,69 @@
+{
+  "name": "dsh-kimi-control",
+  "version": "0.1.0",
+  "description": "Kimi-style browser takeover interactions for DeepSeek Harness: native sidebar, animated control feedback, human handoff, and conversation cards.",
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg",
+    "./package.json": "./package.json"
+  },
+  "icon": "./icon.svg",
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "desktop-bridge",
+    "docs",
+    "locale",
+    "icon.svg",
+    "README.md",
+    "README.en.md",
+    "LICENSE",
+    "NOTICE.md"
+  ],
+  "scripts": {
+    "check": "node --check index.js && node --check client.js && node --check desktop-bridge/plugin-browser-bridge.js && node --check desktop-bridge/install.mjs",
+    "prepack": "npm run check"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "browser-automation",
+    "browser-control",
+    "agent-ui",
+    "kimi"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lswang9/dsh-kimi-control.git"
+  },
+  "homepage": "https://github.com/lswang9/dsh-kimi-control#readme",
+  "bugs": {
+    "url": "https://github.com/lswang9/dsh-kimi-control/issues"
+  },
+  "engines": {
+    "node": ">=22.19",
+    "dsh": ">=0.2.0-rc.2 <0.3.0"
+  },
+  "dependencies": {
+    "dsh-builtin-browser": "^0.4.15"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-slots"
+      ]
+    }
+  }
+}

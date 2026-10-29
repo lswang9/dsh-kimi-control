@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Kimi browser control",
+    "description": "Adds a native browser sidebar, live takeover feedback, human handoff, and browser activity cards to DeepSeek Harness.",
+    "detail": "docs/DETAIL.md"
+  }
+}

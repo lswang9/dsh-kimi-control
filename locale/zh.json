@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Kimi 式浏览器接管",
+    "description": "为 DeepSeek Harness 添加原生浏览器侧栏、动态接管反馈、人机切换和对话内浏览器活动卡片。",
+    "detail": "docs/DETAIL.zh.md"
+  }
+}
