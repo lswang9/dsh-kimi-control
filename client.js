@@ -386,6 +386,220 @@ window.__ModuleLoader__.load({ id: 'dsh-kimi-control', factory: (require) => {
 }
 `
 
+  // Kimi Code desktop browser-workbench chrome. Tokens are Kimi's own values
+  // (`common.css` .dark / :root), so the toolbar, address field, tab chips and
+  // menus read the same as the workbench the plugin is modelled on.
+  const KIMI_CSS = `
+html[data-kc-scheme="dark"] {
+  --kc-bg: #121212;
+  --kc-bg-2: #1f1f1f;
+  --kc-bg-3: #292929;
+  --kc-label-1: rgba(255,255,255,.84);
+  --kc-label-2: rgba(255,255,255,.56);
+  --kc-label-3: rgba(255,255,255,.42);
+  --kc-label-4: rgba(255,255,255,.26);
+  --kc-fill-1: rgba(255,255,255,.05);
+  --kc-fill-2: rgba(255,255,255,.1);
+  --kc-fill-3: rgba(255,255,255,.18);
+  --kc-fill-4: rgba(255,255,255,.25);
+  --kc-sep: rgba(255,255,255,.12);
+  --kc-blue: #1a88ff;
+  --kc-blue-soft: rgba(26,136,255,.12);
+}
+html[data-kc-scheme="light"] {
+  --kc-bg: #ffffff;
+  --kc-bg-2: #f5f5f5;
+  --kc-bg-3: #ffffff;
+  --kc-label-1: rgba(0,0,0,.9);
+  --kc-label-2: rgba(0,0,0,.6);
+  --kc-label-3: rgba(0,0,0,.45);
+  --kc-label-4: rgba(0,0,0,.3);
+  --kc-fill-1: rgba(0,0,0,.03);
+  --kc-fill-2: rgba(0,0,0,.05);
+  --kc-fill-3: rgba(0,0,0,.15);
+  --kc-fill-4: rgba(0,0,0,.25);
+  --kc-sep: rgba(0,0,0,.13);
+  --kc-blue: #1783ff;
+  --kc-blue-soft: rgba(23,131,255,.08);
+}
+.dsh-kc-kimi-root { background: var(--kc-bg) !important; }
+.dsh-kc-kimi-root > form[class*="_toolbar"] { display: none !important; }
+.dsh-kc-toolbar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  box-sizing: border-box;
+  height: 52px;
+  padding: 10px;
+  background: var(--kc-bg);
+  box-shadow: inset 0 -.5px 0 var(--kc-sep);
+  font: 14px/20px var(--dsw-font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, "PingFang SC", sans-serif);
+}
+.dsh-kc-tool {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  color: var(--kc-label-1);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color .18s ease, color .18s ease, transform .12s ease;
+}
+.dsh-kc-tool:hover:not(:disabled) { background: var(--kc-fill-1); }
+.dsh-kc-tool:active:not(:disabled) { background: var(--kc-fill-2); transform: scale(.96); }
+.dsh-kc-tool:disabled { color: var(--kc-label-4); cursor: default; }
+.dsh-kc-glyph { display: block; width: 20px; height: 20px; }
+.dsh-kc-address {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  height: 32px;
+  box-sizing: border-box;
+  margin: 0 2px;
+  background: var(--kc-bg);
+  border: .5px solid transparent;
+  border-radius: 8px;
+  transition: border-color .18s ease, background-color .18s ease;
+}
+.dsh-kc-address:hover:not(.dsh-kc-focused) { background: var(--kc-fill-1); }
+.dsh-kc-address.dsh-kc-focused { background: var(--kc-bg); border-color: var(--kc-fill-4); }
+.dsh-kc-domain {
+  position: absolute;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: calc(100% - 20px);
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+.dsh-kc-address.dsh-kc-focused .dsh-kc-domain { display: none; }
+.dsh-kc-address:not(.dsh-kc-domain-mode) .dsh-kc-domain { display: none; }
+.dsh-kc-favicon { display: grid; width: 16px; height: 16px; flex: none; place-items: center; color: var(--kc-label-2); }
+.dsh-kc-domain-text {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--kc-label-1);
+  font-size: 14px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dsh-kc-address input {
+  position: relative;
+  min-width: 0;
+  flex: 1;
+  height: 100%;
+  padding: 0 10px;
+  color: var(--kc-label-1);
+  font: 14px/20px var(--dsw-font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, "PingFang SC", sans-serif);
+  background: transparent;
+  border: 0;
+  outline: 0;
+}
+.dsh-kc-address.dsh-kc-domain-mode input { color: transparent; }
+.dsh-kc-address input::placeholder { color: var(--kc-label-3); }
+.dsh-kc-address.dsh-kc-domain-mode input::placeholder { color: transparent; }
+.dsh-kc-more-wrap { position: relative; display: inline-flex; flex: none; }
+.dsh-kc-menu {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 176px;
+  padding: 6px;
+  background: var(--kc-bg-2);
+  border: 1px solid var(--kc-sep);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+.dsh-kc-menu[hidden] { display: none; }
+.dsh-kc-menu button {
+  display: flex;
+  width: 100%;
+  height: 36px;
+  align-items: center;
+  padding: 0 8px;
+  color: var(--kc-label-1);
+  font: 14px/20px var(--dsw-font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, "PingFang SC", sans-serif);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.dsh-kc-menu button:hover { background: var(--kc-fill-1); }
+.dsh-kc-agent {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  max-width: 190px;
+  box-sizing: border-box;
+  padding: 0 8px;
+  overflow: hidden;
+  color: var(--kc-label-1);
+  font-size: 12px;
+  line-height: 18px;
+  white-space: nowrap;
+  background: var(--kc-fill-2);
+  border-radius: 8px;
+}
+.dsh-kc-agent[data-state="idle"] { display: none; }
+.dsh-kc-agent-dot {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  background: var(--kc-blue);
+  border-radius: 50%;
+}
+.dsh-kc-agent[data-state="agent"] .dsh-kc-agent-dot { animation: dsh-kc-breathe 1.4s ease-in-out infinite; }
+.dsh-kc-agent[data-state="human"] .dsh-kc-agent-dot { background: var(--kc-label-3); }
+.dsh-kc-agent-text { overflow: hidden; text-overflow: ellipsis; }
+.dsh-kc-agent-return {
+  height: 22px;
+  flex: none;
+  padding: 0 8px;
+  color: var(--kc-label-1);
+  font: inherit;
+  font-size: 12px;
+  background: var(--kc-fill-3);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.dsh-kc-kimi-strip[class*="_tabStrip"] {
+  height: 52px !important;
+  gap: 4px !important;
+  box-sizing: border-box !important;
+  padding: 10px !important;
+  background: var(--kc-bg) !important;
+  box-shadow: inset 0 -.5px 0 var(--kc-sep) !important;
+}
+.dsh-kc-kimi-strip [class*="_tab_"] {
+  height: 32px !important;
+  gap: 4px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  line-height: 20px !important;
+  color: var(--kc-label-1) !important;
+  transition: background-color .12s ease, color .12s ease;
+}
+.dsh-kc-kimi-strip [class*="_tab_"]:hover { background: var(--kc-fill-1) !important; }
+.dsh-kc-kimi-strip [class*="_tabActive"] { background: var(--kc-fill-2) !important; }
+.dsh-kc-kimi-strip [class*="_tabTitle_"] { font-size: 14px !important; line-height: 20px !important; }
+.dsh-kc-kimi-header { height: 52px !important; }
+`
+
   let translate = key => key
   const sessions = new Map()
   const overlays = new Map()
@@ -513,73 +727,277 @@ window.__ModuleLoader__.load({ id: 'dsh-kimi-control', factory: (require) => {
     root.dataset.sessionId = sessionId
     root.innerHTML = `
       <div class="dsh-kc-frame" aria-hidden="true"></div>
-      <div class="dsh-kc-status" role="status" aria-live="polite">
-        <span class="dsh-kc-dot" aria-hidden="true"></span>
-        <strong data-kc-title></strong>
-        <span class="dsh-kc-hint" data-kc-hint></span>
-        <button type="button" class="dsh-kc-return" data-kc-return></button>
-      </div>
       <div class="dsh-kc-action" data-kc-action><span class="dsh-kc-action-dot" aria-hidden="true"></span><span class="dsh-kc-action-text" data-kc-action-text></span></div>
     `
-    root.querySelector('[data-kc-return]').addEventListener('click', () => {
-      publish({ kind: 'human', phase: 'end', sessionId })
-    })
     return root
   }
 
   function paintOverlay(sessionId, root, state) {
     const visual = visualState(state)
     root.dataset.state = visual
-    const title = root.querySelector('[data-kc-title]')
-    const hint = root.querySelector('[data-kc-hint]')
     const action = root.querySelector('[data-kc-action]')
     const actionText = root.querySelector('[data-kc-action-text]')
-    const button = root.querySelector('[data-kc-return]')
-    title.textContent = translate(visual === 'agent' ? 'control.agent' : visual === 'human' ? 'control.human' : 'control.done')
-    hint.textContent = visual === 'agent' ? translate('control.hintAgent') : visual === 'human' ? translate('control.hintHuman') : ''
-    actionText.textContent = visual === 'agent' ? state.label : ''
+    const label = visual === 'agent' ? state.label : ''
+    if (actionText.textContent !== label) actionText.textContent = label
     action.style.display = visual === 'agent' && state.label !== '' ? '' : 'none'
-    button.textContent = translate('control.return')
-    button.style.display = visual === 'human' ? '' : 'none'
+    paintChrome(sessionId)
   }
 
   function syncOverlays() {
     syncQueued = false
-    const mounted = new Set()
     for (const strip of Array.from(document.querySelectorAll('[class*=_tabStrip]'))) {
       const sessionId = sessionIdOfElement(strip)
       if (typeof sessionId !== 'string' || !sessions.has(sessionId)) continue
       const view = pageViewFor(sessionId)
-      const panel = view?.parentElement ?? null
-      if (panel === null) continue
-      let root = overlays.get(sessionId)
-      if (root === undefined) {
-        root = makeOverlay(sessionId)
-        overlays.set(sessionId, root)
-      }
-      if (root.parentElement !== panel) {
-        const position = getComputedStyle(panel).position
-        if (position === 'static') panel.style.position = 'relative'
-        panel.appendChild(root)
-      }
-      paintOverlay(sessionId, root, sessions.get(sessionId))
-      mounted.add(sessionId)
-    }
-    for (const [sessionId, root] of overlays) {
-      if (mounted.has(sessionId)) continue
-      root.remove()
-      overlays.delete(sessionId)
+      if (view === null) continue
+      syncChrome(sessionId, strip, view)
     }
     const now = Date.now()
     for (const [sessionId, state] of sessions) {
       if (state.activeCalls.size === 0 && !state.human && !state.done && now - state.touched > 300000) sessions.delete(sessionId)
     }
+    teardownChrome()
   }
 
+  let syncBudget = { start: 0, count: 0 }
   function scheduleSync() {
     if (syncQueued) return
     syncQueued = true
-    queueMicrotask(syncOverlays)
+    const now = Date.now()
+    if (now - syncBudget.start > 1000) syncBudget = { start: now, count: 0 }
+    syncBudget.count += 1
+    // Circuit breaker: a self-triggered mutation storm must never starve the
+    // renderer. Past this budget the sync runs at 4 Hz instead of ~60 Hz.
+    const delay = syncBudget.count > 24 ? 250 : 16
+    setTimeout(syncOverlays, delay)
+  }
+
+  const GLYPHS = {
+    back: '<svg class="dsh-kc-glyph" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M1.80108 10.6784C1.50999 10.3852 1.51084 9.91176 1.80299 9.61961L6.41837 5.00423C6.71127 4.71133 7.18614 4.71133 7.47903 5.00423C7.77193 5.29712 7.77193 5.77199 7.47903 6.06489L4.14398 9.39994H17.3333C17.7475 9.39994 18.0833 9.73573 18.0833 10.1499C18.0833 10.5642 17.7475 10.8999 17.3333 10.8999H4.13477L7.48094 14.2704C7.77278 14.5643 7.77106 15.0392 7.47711 15.331C7.18316 15.6229 6.70829 15.6211 6.41646 15.3272L1.80108 10.6784Z" fill="currentColor"/></svg>',
+    forward: '<svg class="dsh-kc-glyph" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M17.8656 10.6784C18.1566 10.3852 18.1558 9.91176 17.8636 9.61961L13.2483 5.00423C12.9554 4.71133 12.4805 4.71133 12.1876 5.00423C11.8947 5.29712 11.8947 5.77199 12.1876 6.06489L15.5227 9.39994H2.33332C1.9191 9.39994 1.58332 9.73573 1.58332 10.1499C1.58332 10.5642 1.9191 10.8999 2.33332 10.8999H15.5319L12.1857 14.2704C11.8939 14.5643 11.8956 15.0392 12.1895 15.331C12.4835 15.6229 12.9583 15.6211 13.2502 15.3272L17.8656 10.6784Z" fill="currentColor"/></svg>',
+    reload: '<svg class="dsh-kc-glyph" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M16.2 10a6.2 6.2 0 1 1-1.82-4.39" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M15.1 2.6v4.2h-4.2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    stop: '<svg class="dsh-kc-glyph" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="6.5" y="6.5" width="7" height="7" rx="1.6" fill="currentColor"/></svg>',
+    more: '<svg class="dsh-kc-glyph" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="4.6" cy="10" r="1.3" fill="currentColor"/><circle cx="10" cy="10" r="1.3" fill="currentColor"/><circle cx="15.4" cy="10" r="1.3" fill="currentColor"/></svg>',
+    globe: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="8" cy="8" r="5.6" stroke="currentColor" stroke-width="1.2"/><path d="M2.6 8h10.8M8 2.3c1.55 1.5 2.35 3.37 2.35 5.7S9.55 12.3 8 13.7C6.45 12.3 5.65 10.33 5.65 8S6.45 3.8 8 2.3Z" stroke="currentColor" stroke-width="1.05"/></svg>',
+  }
+
+  const chromeBySession = new Map()
+  let chromeMenuOpen = null
+
+  function schemeName() {
+    try {
+      const scheme = getComputedStyle(document.documentElement).colorScheme || ''
+      return scheme.includes('dark') ? 'dark' : 'light'
+    } catch { return 'dark' }
+  }
+
+  function installChromeStyles() {
+    if (document.getElementById('dsh-kimi-control-chrome') !== null) return
+    const tag = document.createElement('style')
+    tag.id = 'dsh-kimi-control-chrome'
+    tag.textContent = KIMI_CSS
+    document.head.appendChild(tag)
+  }
+
+  function rootFor(view) {
+    let node = view.parentElement
+    while (node !== null && node !== undefined && node !== document.body) {
+      if (node.querySelector(':scope > form[class*="_toolbar"]') !== null) return node
+      node = node.parentElement
+    }
+    return null
+  }
+
+  function normalizeUrl(raw) {
+    const text = String(raw ?? '').trim()
+    if (text === '') return ''
+    if (/^[a-z][a-z0-9+.-]*:/i.test(text)) return text
+    return 'https://' + text
+  }
+
+  function navigateView(view, raw) {
+    const url = normalizeUrl(raw)
+    if (url === '') return
+    try { view.loadURL(url) } catch { try { view.src = url } catch {} }
+  }
+
+  function closeChromeMenu() {
+    if (chromeMenuOpen === null) return
+    chromeMenuOpen.menu.hidden = true
+    chromeMenuOpen = null
+  }
+
+  function makeChrome(sessionId, view) {
+    const root = rootFor(view)
+    if (root === null) return null
+    root.classList.add('dsh-kc-kimi-root')
+    for (const stale of Array.from(root.querySelectorAll(':scope > .dsh-kc-toolbar'))) stale.remove()
+    const bar = document.createElement('div')
+    bar.className = 'dsh-kc-toolbar'
+    bar.dataset.sessionId = sessionId
+    bar.innerHTML = `
+      <button type="button" class="dsh-kc-tool" data-kc-action="back" aria-label="后退">${GLYPHS.back}</button>
+      <button type="button" class="dsh-kc-tool" data-kc-action="forward" aria-label="前进">${GLYPHS.forward}</button>
+      <button type="button" class="dsh-kc-tool" data-kc-action="reload" aria-label="重新加载">${GLYPHS.reload}</button>
+      <form class="dsh-kc-address dsh-kc-domain-mode" autocomplete="off">
+        <span class="dsh-kc-domain"><span class="dsh-kc-favicon">${GLYPHS.globe}</span><span class="dsh-kc-domain-text" data-kc-domain></span></span>
+        <input data-kc-url placeholder="输入网址" spellcheck="false" autocomplete="off" aria-label="地址" />
+      </form>
+      <div class="dsh-kc-more-wrap">
+        <button type="button" class="dsh-kc-tool" data-kc-action="more" aria-label="更多">${GLYPHS.more}</button>
+        <div class="dsh-kc-menu" hidden>
+          <button type="button" data-kc-menu="reload">刷新页面</button>
+          <button type="button" data-kc-menu="copy">复制链接</button>
+          <button type="button" data-kc-menu="close">关闭标签页</button>
+        </div>
+      </div>
+      <div class="dsh-kc-agent" data-state="idle">
+        <span class="dsh-kc-agent-dot" aria-hidden="true"></span>
+        <span class="dsh-kc-agent-text"></span>
+        <button type="button" class="dsh-kc-agent-return">交还给 Agent</button>
+      </div>
+    `
+    root.insertBefore(bar, root.firstChild)
+    const chrome = {
+      sessionId, root, view, bar,
+      back: bar.querySelector('[data-kc-action="back"]'),
+      forward: bar.querySelector('[data-kc-action="forward"]'),
+      reload: bar.querySelector('[data-kc-action="reload"]'),
+      address: bar.querySelector('.dsh-kc-address'),
+      input: bar.querySelector('[data-kc-url]'),
+      domain: bar.querySelector('[data-kc-domain]'),
+      more: bar.querySelector('[data-kc-action="more"]'),
+      menu: bar.querySelector('.dsh-kc-menu'),
+      agent: bar.querySelector('.dsh-kc-agent'),
+      agentText: bar.querySelector('.dsh-kc-agent-text'),
+      agentReturn: bar.querySelector('.dsh-kc-agent-return'),
+      loading: false,
+      bound: false,
+    }
+
+    const syncAddress = () => {
+      let url = ''
+      try { url = String(view.getURL() || '') } catch { url = '' }
+      let host = ''
+      try { host = url === '' || url === 'about:blank' ? '' : (new URL(url).host || url) } catch { host = url }
+      if (chrome.domain.textContent !== host) chrome.domain.textContent = host
+      const focused = document.activeElement === chrome.input
+      chrome.address.classList.toggle('dsh-kc-focused', focused)
+      chrome.address.classList.toggle('dsh-kc-domain-mode', !focused && host !== '')
+      if (!focused) chrome.input.value = url === 'about:blank' ? '' : url
+      try { chrome.back.disabled = !view.canGoBack(); chrome.forward.disabled = !view.canGoForward() } catch {}
+    }
+    const setLoading = loading => {
+      chrome.loading = loading
+      chrome.reload.innerHTML = loading ? GLYPHS.stop : GLYPHS.reload
+      chrome.reload.setAttribute('aria-label', loading ? '停止加载' : '重新加载')
+    }
+    chrome.syncAddress = syncAddress
+    chrome.setLoading = setLoading
+
+    if (!chrome.bound) {
+      chrome.bound = true
+      view.addEventListener('did-navigate', syncAddress)
+      view.addEventListener('did-navigate-in-page', syncAddress)
+      view.addEventListener('page-title-updated', syncAddress)
+      view.addEventListener('did-start-loading', () => setLoading(true))
+      view.addEventListener('did-stop-loading', () => { setLoading(false); syncAddress() })
+      view.addEventListener('did-fail-load', syncAddress)
+      view.addEventListener('dom-ready', syncAddress)
+
+      chrome.back.addEventListener('click', () => { try { view.goBack() } catch {} })
+      chrome.forward.addEventListener('click', () => { try { view.goForward() } catch {} })
+      chrome.reload.addEventListener('click', () => {
+        try { if (chrome.loading) view.stop(); else view.reload() } catch {}
+      })
+      chrome.address.addEventListener('submit', event => {
+        event.preventDefault()
+        navigateView(view, chrome.input.value)
+        chrome.input.blur()
+      })
+      chrome.input.addEventListener('focus', () => {
+        chrome.address.classList.add('dsh-kc-focused')
+        chrome.address.classList.remove('dsh-kc-domain-mode')
+        try { chrome.input.value = view.getURL() || '' } catch {}
+        chrome.input.select()
+      })
+      chrome.input.addEventListener('blur', () => {
+        chrome.address.classList.remove('dsh-kc-focused')
+        syncAddress()
+      })
+      chrome.input.addEventListener('keydown', event => {
+        if (event.key === 'Escape') { event.preventDefault(); chrome.input.blur() }
+      })
+      chrome.more.addEventListener('click', event => {
+        event.stopPropagation()
+        if (chromeMenuOpen !== null && chromeMenuOpen.menu === chrome.menu) { closeChromeMenu(); return }
+        closeChromeMenu()
+        chrome.menu.hidden = false
+        chromeMenuOpen = { menu: chrome.menu }
+      })
+      chrome.menu.addEventListener('click', event => {
+        const action = event.target instanceof Element ? event.target.closest('[data-kc-menu]')?.getAttribute('data-kc-menu') : null
+        closeChromeMenu()
+        if (action === 'reload') { try { view.reload() } catch {} }
+        else if (action === 'copy') { try { void navigator.clipboard.writeText(view.getURL()) } catch {} }
+        else if (action === 'close') {
+          try {
+            const tab = sidebarRight?.active?.()
+            if (tab?.id !== undefined) sidebarRight.close(tab.id)
+          } catch {}
+        }
+      })
+      chrome.agentReturn.addEventListener('click', () => {
+        publish({ kind: 'human', phase: 'end', sessionId })
+      })
+      document.addEventListener('pointerdown', event => {
+        if (chromeMenuOpen === null) return
+        if (chrome.menu.contains(event.target)) return
+        if (chrome.more.contains(event.target)) return
+        closeChromeMenu()
+      })
+    }
+    syncAddress()
+    return chrome
+  }
+
+  function paintChrome(sessionId) {
+    const chrome = chromeBySession.get(sessionId)
+    if (chrome === undefined) return
+    const state = sessions.get(sessionId)
+    const visual = state === undefined ? 'idle' : visualState(state)
+    chrome.agent.dataset.state = visual
+    const label = translate(visual === 'agent' ? 'control.agent' : visual === 'human' ? 'control.human' : 'control.done')
+    if (chrome.agentText.textContent !== label) chrome.agentText.textContent = label
+    chrome.agentReturn.style.display = visual === 'human' ? '' : 'none'
+    const returnLabel = translate('control.return')
+    if (chrome.agentReturn.textContent !== returnLabel) chrome.agentReturn.textContent = returnLabel
+  }
+
+  function syncChrome(sessionId, strip, view) {
+    try { syncChromeUnsafe(sessionId, strip, view) } catch {}
+  }
+
+  function syncChromeUnsafe(sessionId, strip, view) {
+    strip.classList.add('dsh-kc-kimi-strip')
+    if (strip.parentElement) strip.parentElement.classList.add('dsh-kc-kimi-header')
+    let chrome = chromeBySession.get(sessionId)
+    if (chrome === undefined || chrome.view !== view || !chrome.bar.isConnected) {
+      if (chrome !== undefined) { try { chrome.bar.remove() } catch {} ; chromeBySession.delete(sessionId) }
+      chrome = makeChrome(sessionId, view)
+      if (chrome === null) return
+      chromeBySession.set(sessionId, chrome)
+    }
+    paintChrome(sessionId)
+  }
+
+  function teardownChrome() {
+    for (const [sessionId, chrome] of chromeBySession) {
+      if (chrome.root.isConnected && chrome.view.isConnected && chrome.bar.isConnected) continue
+      try { chrome.bar.remove() } catch {}
+      chromeBySession.delete(sessionId)
+    }
+    closeChromeMenu()
   }
 
   function installStyles() {
@@ -698,9 +1116,22 @@ window.__ModuleLoader__.load({ id: 'dsh-kimi-control', factory: (require) => {
   }
 
   function apply(ctx) {
+    for (const layer of Array.from(document.querySelectorAll('.dsh-kc-layer'))) layer.remove()
     installStyles()
+    installChromeStyles()
     ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'dsh-kimi-control: dictionaries')
     translate = ctx.locale.bind(NS)
+
+    ctx.effect(() => {
+      const syncScheme = () => { document.documentElement.dataset.kcScheme = schemeName() }
+      syncScheme()
+      const media = window.matchMedia('(prefers-color-scheme: dark)')
+      try { media.addEventListener('change', syncScheme) } catch { media.addListener?.(syncScheme) }
+      return () => {
+        try { media.removeEventListener('change', syncScheme) } catch { media.removeListener?.(syncScheme) }
+        delete document.documentElement.dataset.kcScheme
+      }
+    }, 'dsh-kimi-control: toolbar scheme')
 
     if (typeof ctx.inject === 'function') {
       ctx.inject(['sidebarRight'], scope => {
@@ -726,7 +1157,10 @@ window.__ModuleLoader__.load({ id: 'dsh-kimi-control', factory: (require) => {
     ctx.effect(() => {
       globalThis[GLOBAL] = api
       observer = new MutationObserver(records => {
-        const external = records.some(record => !(record.target instanceof Element && record.target.closest('.dsh-kc-layer')))
+        const external = records.some(record => {
+          if (!(record.target instanceof Element)) return true
+          return record.target.closest('.dsh-kc-layer, .dsh-kc-toolbar, .dsh-kc-menu') === null
+        })
         if (external) scheduleSync()
       })
       observer.observe(document.body, { childList: true, subtree: true })
@@ -738,7 +1172,11 @@ window.__ModuleLoader__.load({ id: 'dsh-kimi-control', factory: (require) => {
         overlays.clear()
         for (const state of sessions.values()) if (state.timer !== undefined) clearTimeout(state.timer)
         sessions.clear()
+        for (const chrome of chromeBySession.values()) { try { chrome.bar.remove() } catch {} }
+        chromeBySession.clear()
+        closeChromeMenu()
         document.getElementById('dsh-kimi-control-styles')?.remove()
+        document.getElementById('dsh-kimi-control-chrome')?.remove()
       }
     }, 'dsh-kimi-control: browser takeover presentation')
 
